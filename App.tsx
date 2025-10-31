@@ -260,10 +260,7 @@ const App: React.FC = () => {
     }, []);
 
     useEffect(() => {
-        if (!process.env.API_KEY) {
-          setIsAIOff(true);
-          addToast("AI機能は無効です: APIキーが設定されていません。", 'info');
-        }
+        if (IS_AI_DISABLED) { setIsAIOff(true); addToast('AI機能は無効です(設定)。','info'); } else if (!GEMINI_API_KEY) { setIsAIOff(true); addToast('AI機能は無効です: Gemini鍵未設定。','info'); } else { setIsAIOff(false); }
         
         const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
             setSession(session);
