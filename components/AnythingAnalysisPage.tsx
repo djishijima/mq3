@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { GoogleGenAI, Type } from "@google/genai";
+import { GEMINI_API_KEY } from '../src/config.ts';
 import { User, AnalysisResult, AnalysisHistory } from '../types';
 import { getAnalysisHistory, addAnalysisHistory } from '../services/dataService';
 import { Loader, Sparkles, FileText, Link as LinkIcon, Trash2, Copy, History, X } from './Icons';
@@ -181,11 +182,16 @@ const AnythingAnalysisPage: React.FC<AnythingAnalysisPageProps> = ({ currentUser
             return;
         }
 
+        if (!GEMINI_API_KEY) {
+            addToast('AI機能は現在利用できません: Gemini APIキーが設定されていません。', 'error');
+            return;
+        }
+
         setIsLoading(true);
         setResult(null);
 
         try {
-            const ai = new GoogleGenAI({ apiKey: process.env.API_KEY! });
+            const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
             
             const contents: any[] = [{ text: `以下のデータセットを分析してください。\n分析の視点: ${viewpoint}` }];
 
