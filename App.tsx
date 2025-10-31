@@ -1,4 +1,5 @@
 import { GEMINI_API_KEY, IS_AI_DISABLED } from './src/config.ts';
+console.log('GEMINI_CONFIGURED', !!GEMINI_API_KEY);
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import Sidebar from './components/Sidebar.tsx';
 import Header from './components/Header.tsx';
