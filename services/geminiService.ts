@@ -1,3 +1,4 @@
+import { GEMINI_API_KEY, IS_AI_DISABLED } from '../src/config.ts';
 // FIX: Import LiveServerMessage and Blob for Live Chat functionality.
 import { GoogleGenAI, Type, GenerateContentResponse, Chat, Modality, FunctionDeclaration, LiveServerMessage, Blob } from "@google/genai";
 // FIX: Import MarketResearchReport type.
@@ -6,20 +7,20 @@ import { formatJPY, createSignature } from "../utils.ts";
 import { v4 as uuidv4 } from 'uuid';
 
 // AI機能をグローバルに制御する環境変数
-const NEXT_PUBLIC_AI_OFF = process.env.NEXT_PUBLIC_AI_OFF === '1';
+const IS_AI_DISABLED = process.env.IS_AI_DISABLED === '1';
 
 const API_KEY = process.env.API_KEY;
 
-if (!API_KEY && !NEXT_PUBLIC_AI_OFF) {
+if (!API_KEY && !IS_AI_DISABLED) {
   console.error("API_KEY environment variable not set. AI functions might be unavailable.");
 }
 
-const ai = new GoogleGenAI({ apiKey: API_KEY! });
+const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
 
 const model = "gemini-2.5-flash-lite"; // Default model for low-latency
 
 const checkOnlineAndAIOff = () => {
-    if (NEXT_PUBLIC_AI_OFF) {
+    if (IS_AI_DISABLED) {
         throw new Error('AI機能は現在無効です。');
     }
     if (!navigator.onLine) {
@@ -849,7 +850,7 @@ export const parseApprovalDocument = async (base64Data: string, mimeType: string
 
 // FIX: ADD startBusinessConsultantChat
 export const startBusinessConsultantChat = (): Chat => {
-    if (NEXT_PUBLIC_AI_OFF) {
+    if (IS_AI_DISABLED) {
         throw new Error('AI機能は現在無効です。');
     }
     const systemInstruction = `あなたは経験豊富な経営コンサルタントです。ユーザーは印刷会社の従業員です。提供された社内データ（案件情報、顧客情報、会計情報など）のコンテキストを理解し、具体的で実践的なアドバイスを提供してください。必要に応じてWeb検索も活用し、市場のトレンドや競合の動向も踏まえた回答を心がけてください。`;
@@ -898,7 +899,7 @@ export const generateClosingSummary = async (
 
 // FIX: ADD startBugReportChat
 export const startBugReportChat = (): Chat => {
-    if (NEXT_PUBLIC_AI_OFF) {
+    if (IS_AI_DISABLED) {
         throw new Error('AI機能は現在無効です。');
     }
     const systemInstruction = `あなたはバグ報告・改善要望の受付アシスタントです。ユーザーからの自然言語での報告をヒアリングし、最終的に以下のJSON形式で情報を整理して出力してください。必要な情報が足りない場合は、追加で質問してください。JSON以外のテキストは絶対に出力しないでください。
